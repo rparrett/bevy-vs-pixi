@@ -7,6 +7,9 @@ use bevy::{
 };
 use rand::{thread_rng, Rng};
 
+const NUM_LAYERS: usize = 100_000;
+const MAX_Z: f32 = 999.9;
+
 pub struct RectanglesPlugin;
 
 impl Plugin for RectanglesPlugin {
@@ -114,6 +117,8 @@ fn spawn_rectangles(commands: &mut Commands, window: &Window, num: u32) {
     let (width, height) = (window.width(), window.height());
     let teleport_target = -(width / 2.);
 
+    let layer_size = MAX_Z / NUM_LAYERS as f32;
+
     for _ in 0..num {
         let dimensions = Vec2::splat(rng.gen::<f32>().mul_add(40., 10.));
         commands
@@ -132,7 +137,7 @@ fn spawn_rectangles(commands: &mut Commands, window: &Window, num: u32) {
                     transform: Transform::from_xyz(
                         (rng.gen::<f32>() - 0.5) * width,
                         (rng.gen::<f32>() - 0.5) * height,
-                        rng.gen::<f32>(),
+                        rng.gen_range(0..NUM_LAYERS) as f32 * layer_size,
                     ),
                     ..default()
                 },
@@ -144,7 +149,7 @@ fn spawn_rectangles(commands: &mut Commands, window: &Window, num: u32) {
                         custom_size: Some(dimensions - Vec2::splat(3.)),
                         ..default()
                     },
-                    transform: Transform::from_xyz(0., 0., f32::EPSILON),
+                    transform: Transform::from_xyz(0., 0., layer_size / 2.),
                     ..default()
                 });
             });
