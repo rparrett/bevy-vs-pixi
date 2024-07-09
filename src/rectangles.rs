@@ -158,12 +158,12 @@ fn bounds_updater(
 
     let mut reader = resize_event.get_reader();
     if let Some(e) = reader
-        .iter(&resize_event)
+        .read(&resize_event)
         .filter(|e| e.window == window_id)
         .last()
     {
         let teleport_target = -(e.width / 2.);
-        rectangles_query.par_iter_mut().for_each_mut(|mut r| {
+        rectangles_query.par_iter_mut().for_each(|mut r| {
             r.teleport_target = teleport_target - r.width;
         });
     }
@@ -172,7 +172,7 @@ fn bounds_updater(
 fn movement(time: Res<Time>, mut rectangles_query: Query<(&RectangleObject, &mut Transform)>) {
     rectangles_query
         .par_iter_mut()
-        .for_each_mut(|(r, mut transform)| {
+        .for_each(|(r, mut transform)| {
             transform.translation.x -= r.velocity * time.delta_seconds();
         });
 }
@@ -180,7 +180,7 @@ fn movement(time: Res<Time>, mut rectangles_query: Query<(&RectangleObject, &mut
 fn collision_detection(mut rectangles_query: Query<(&RectangleObject, &mut Transform)>) {
     rectangles_query
         .par_iter_mut()
-        .for_each_mut(|(r, mut transform)| {
+        .for_each(|(r, mut transform)| {
             if transform.translation.x < r.teleport_target {
                 transform.translation.x = -transform.translation.x;
             }
