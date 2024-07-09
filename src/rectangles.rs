@@ -11,7 +11,7 @@ use rand_xoshiro::Xoshiro256PlusPlus;
 const BORDER_COLOR: Color = Color::BLACK;
 // Workaround for poor batching with mixed WHITE and other-colored sprites.
 // TODO https://github.com/bevyengine/bevy/issues/8100
-const FILL_COLOR: Color = Color::rgb(1.0 - f32::EPSILON, 1.0, 1.0);
+const FILL_COLOR: Color = Color::srgb(1.0 - f32::EPSILON, 1.0, 1.0);
 
 pub struct RectanglesPlugin;
 
