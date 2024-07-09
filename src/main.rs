@@ -29,7 +29,7 @@ fn main() {
     app.add_systems(Startup, setup_cameras);
     app.add_systems(Startup, setup_ui);
     app.add_systems(Update, full_screen_toggle.run_if(pressed_f));
-    app.add_systems(Update, update_stats.run_if(resource_changed::<Stats>()));
+    app.add_systems(Update, update_stats.run_if(resource_changed::<Stats>));
     app.add_systems(Update, update_fps.run_if(on_timer(Duration::from_secs(1))));
 
     app.add_plugins(FrameTimeDiagnosticsPlugin::default());
@@ -89,8 +89,8 @@ fn setup_ui(mut commands: Commands) {
         });
 }
 
-fn pressed_f(keyboard_input: Res<Input<KeyCode>>) -> bool {
-    keyboard_input.just_released(KeyCode::F)
+fn pressed_f(keyboard_input: Res<ButtonInput<KeyCode>>) -> bool {
+    keyboard_input.just_released(KeyCode::KeyF)
 }
 
 fn full_screen_toggle(mut window: Query<&mut Window, With<PrimaryWindow>>) {
@@ -113,7 +113,7 @@ fn update_stats(stats: Res<Stats>, mut query: Query<&mut Text, With<StatsText>>)
 
 fn update_fps(diagnostics: Res<DiagnosticsStore>, mut query: Query<&mut Text, With<StatsText>>) {
     if let Some(fps) = diagnostics
-        .get(FrameTimeDiagnosticsPlugin::FPS)
+        .get(&FrameTimeDiagnosticsPlugin::FPS)
         .and_then(Diagnostic::smoothed)
     {
         let mut text = query.single_mut();

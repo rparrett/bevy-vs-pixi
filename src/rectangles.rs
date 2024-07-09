@@ -70,7 +70,7 @@ fn setup(
 
 fn mouse_handler(
     mut commands: Commands,
-    mouse_button_input: Res<Input<MouseButton>>,
+    mouse_button_input: Res<ButtonInput<MouseButton>>,
     window: Query<&Window, With<PrimaryWindow>>,
     mut stats: ResMut<Stats>,
     rectangles: Query<Entity, With<RectangleObject>>,
