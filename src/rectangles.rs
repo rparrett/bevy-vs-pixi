@@ -109,30 +109,26 @@ fn spawn_rectangles(
                     width: dimensions.x,
                     teleport_target: teleport_target - dimensions.x,
                 },
-                SpriteBundle {
-                    sprite: Sprite {
-                        color: BORDER_COLOR,
-                        custom_size: Some(dimensions),
-                        ..default()
-                    },
-                    transform: Transform::from_xyz(
-                        (rng.gen::<f32>() - 0.5) * width,
-                        (rng.gen::<f32>() - 0.5) * height,
-                        rng.gen::<f32>(),
-                    ),
+                Sprite {
+                    color: BORDER_COLOR,
+                    custom_size: Some(dimensions),
                     ..default()
                 },
+                Transform::from_xyz(
+                    (rng.gen::<f32>() - 0.5) * width,
+                    (rng.gen::<f32>() - 0.5) * height,
+                    rng.gen::<f32>(),
+                ),
             ))
             .with_children(|children| {
-                children.spawn(SpriteBundle {
-                    sprite: Sprite {
+                children.spawn((
+                    Sprite {
                         color: FILL_COLOR,
                         custom_size: Some(dimensions - Vec2::splat(3.)),
                         ..default()
                     },
-                    transform: Transform::from_xyz(0., 0., f32::EPSILON),
-                    ..default()
-                });
+                    Transform::from_xyz(0., 0., f32::EPSILON),
+                ));
             });
     }
 }
@@ -156,7 +152,7 @@ fn bounds_updater(
         return;
     };
 
-    let mut reader = resize_event.get_reader();
+    let mut reader = resize_event.get_cursor();
     if let Some(e) = reader
         .read(&resize_event)
         .filter(|e| e.window == window_id)
@@ -173,7 +169,7 @@ fn movement(time: Res<Time>, mut rectangles_query: Query<(&RectangleObject, &mut
     rectangles_query
         .par_iter_mut()
         .for_each(|(r, mut transform)| {
-            transform.translation.x -= r.velocity * time.delta_seconds();
+            transform.translation.x -= r.velocity * time.delta_secs();
         });
 }
 
